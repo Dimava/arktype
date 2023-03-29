@@ -116,4 +116,20 @@ describe("scope", () => {
             $.compile()
         }).throwsAndHasTypeError(writeUnboundableMessage("'b'"))
     })
+    it("can mention types from other scopes", () => {
+        const A = type({ o: "0" })
+        const B = scope({ A }).type({ a: "A" })
+        const C = scope({ B }).type({ b: "B" })
+        attest(C.node).snap({
+            /* ... */
+        })
+    })
+    it("can rename types from other scopes", () => {
+        const A = type({ o: "0" })
+        const B = scope({ A }).type({ a: "A" })
+        const C = scope({ A: B }).type({ b: "A" })
+        attest(C.node).snap({
+            /* ... */
+        })
+    })
 })
