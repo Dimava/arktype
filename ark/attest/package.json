@@ -17,10 +17,12 @@
 	"exports": {
 		".": {
 			"ark-ts": "./index.ts",
+			"bun": "./index.ts",
 			"default": "./out/index.js"
 		},
 		"./internal/*": {
 			"ark-ts": "./*",
+			"bun": "./*",
 			"default": "./out/*"
 		}
 	},
