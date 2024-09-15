@@ -1,6 +1,5 @@
 import { caller } from "@ark/fs"
 import { printable, snapshot, type Constructor } from "@ark/util"
-import prettier from "@prettier/sync"
 import { type } from "arktype"
 import * as assert from "node:assert/strict"
 import { isDeepStrictEqual } from "node:util"
@@ -11,7 +10,6 @@ import {
 	type SnapshotArgs
 } from "../cache/snapshots.ts"
 import type { Completions } from "../cache/writeAssertionCache.ts"
-import { getConfig } from "../config.ts"
 import { chainableNoOpProxy } from "../utils.ts"
 import {
 	TypeAssertionMapping,
@@ -23,6 +21,7 @@ import {
 	throwAssertionError
 } from "./assertions.ts"
 import type { AssertionContext } from "./attest.ts"
+import { formatTypeString } from "./format.ts"
 
 export type ChainableAssertionOptions = {
 	allowRegex?: boolean
@@ -236,20 +235,6 @@ export class ChainableAssertions implements AssertionRecord {
 const checkCompletionsForErrors = (completions?: Completions) => {
 	if (typeof completions === "string") throw new Error(completions)
 }
-
-const declarationPrefix = "type T = "
-
-const formatTypeString = (typeString: string) =>
-	prettier
-		.format(`${declarationPrefix}${typeString}`, {
-			semi: false,
-			printWidth: 60,
-			trailingComma: "none",
-			parser: "typescript",
-			...getConfig().typeToStringFormat
-		})
-		.slice(declarationPrefix.length)
-		.trimEnd()
 
 export type AssertionKind = "value" | "type"
 
