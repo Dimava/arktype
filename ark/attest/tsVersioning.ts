@@ -1,6 +1,6 @@
 import { assertPackageRoot, fsRoot, readJson } from "@ark/fs"
 import type { Digit } from "@ark/util"
-import { existsSync, renameSync, symlinkSync, unlinkSync } from "fs"
+import { copyFileSync, existsSync, renameSync, unlinkSync } from "fs"
 import { dirname } from "path"
 import { join } from "path/posix"
 import ts from "typescript"
@@ -41,7 +41,7 @@ export const forTypeScriptVersions = (
 			try {
 				if (existsSync(tsPrimaryPath)) unlinkSync(tsPrimaryPath)
 
-				symlinkSync(targetPath, tsPrimaryPath)
+				copyFileSync(targetPath, tsPrimaryPath)
 				fn(version)
 				passedVersions.push(version)
 			} catch (e) {
