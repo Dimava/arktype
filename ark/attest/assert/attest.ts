@@ -40,6 +40,7 @@ export type AssertionContext = {
 	typeRelationshipAssertionEntries?: VersionedTypeAssertion<"type">[]
 	typeBenchmarkingAssertionEntries?: VersionedTypeAssertion<"bench">[]
 	lastSnapName?: string
+	stackStartFn?: Function
 }
 
 export type InternalAssertionHooks = {

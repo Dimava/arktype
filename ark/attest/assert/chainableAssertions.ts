@@ -189,7 +189,7 @@ export class ChainableAssertions implements AssertionRecord {
 				new TypeAssertionMapping(data => ({
 					actual: data.errors.join("\n")
 				})),
-				this.ctx
+				{ ...this.ctx, stackStartFn: this.throwsAndHasTypeError }
 			)
 		}
 	}
