@@ -68,12 +68,7 @@ export const versionableAssertion =
 				} catch (e) {
 					errorMessage += `❌TypeScript@${version}:${e}\n`
 				}
-				if (errorMessage) {
-					throw new AssertionError({
-						message: errorMessage,
-						stackStartFn: ctx.stackStartFn
-					})
-				}
+				if (errorMessage) throw new AssertionError({ message: errorMessage })
 			}
 		} else fn(expected, actual, ctx)
 	}
