@@ -52,6 +52,7 @@
 		"@ark/repo": "workspace:*",
 		"@ark/util": "workspace:*",
 		"@eslint/js": "9.10.0",
+		"@types/bun": "^1.1.9",
 		"@types/mocha": "10.0.7",
 		"@types/node": "22.5.4",
 		"arktype": "workspace:*",

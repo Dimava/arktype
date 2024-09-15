@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"allowImportingTsExtensions": true,
 		"customConditions": ["ark-ts"],
-		"types": ["mocha", "node"]
+		"types": ["mocha", "node", "bun"]
 		// "noErrorTruncation": true
 	},
 	"exclude": ["**/out", "**/node_modules", "./ark/docs"]
