@@ -1,6 +1,6 @@
 import { assertPackageRoot, fsRoot, readJson } from "@ark/fs"
 import type { Digit } from "@ark/util"
-import { copyFileSync, existsSync, renameSync, unlinkSync } from "fs"
+import { existsSync, renameSync, symlinkSync, unlinkSync } from "fs"
 import { dirname } from "path"
 import { join } from "path/posix"
 import ts from "typescript"
@@ -28,6 +28,7 @@ export const forTypeScriptVersions = (
 	const nodeModules = join(assertPackageRoot(process.cwd()), "node_modules")
 	const tsPrimaryPath = join(nodeModules, "typescript")
 	const tsTemporaryPath = join(nodeModules, "typescript-temp")
+	if (existsSync(tsTemporaryPath)) unlinkSync(tsTemporaryPath)
 	if (existsSync(tsPrimaryPath)) renameSync(tsPrimaryPath, tsTemporaryPath)
 
 	try {
@@ -41,7 +42,7 @@ export const forTypeScriptVersions = (
 			try {
 				if (existsSync(tsPrimaryPath)) unlinkSync(tsPrimaryPath)
 
-				copyFileSync(targetPath, tsPrimaryPath)
+				symlinkSync(targetPath, tsPrimaryPath, "junction")
 				fn(version)
 				passedVersions.push(version)
 			} catch (e) {
@@ -65,6 +66,7 @@ export const forTypeScriptVersions = (
 	} finally {
 		if (existsSync(tsTemporaryPath)) {
 			console.log(`⏮️ Restoring your original TypeScript version...`)
+			unlinkSync(tsPrimaryPath)
 			renameSync(tsTemporaryPath, tsPrimaryPath)
 		}
 	}
