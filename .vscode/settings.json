@@ -40,5 +40,6 @@
 	},
 	"editor.quickSuggestions": {
 		"strings": "on"
-	}
+	},
+	"terminal.integrated.scrollback": 10000
 }
