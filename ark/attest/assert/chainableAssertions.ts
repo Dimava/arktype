@@ -213,7 +213,7 @@ export class ChainableAssertions implements AssertionRecord {
 		return {
 			get toString() {
 				self.ctx.actual = new TypeAssertionMapping(data => ({
-					actual: formatTypeString(data.args[0].type)
+					actual: formatTypeString(data.args[0].type, self.ctx.position.file)
 				}))
 				self.ctx.allowRegex = true
 				return self.immediateOrChained()

@@ -8,12 +8,16 @@ const formatSync = createSyncFn<typeof format>(
 
 const declarationPrefix = "type T = "
 
-export const formatTypeString = (typeString: string): string =>
+export const formatTypeString = (
+	typeString: string,
+	filename: string
+): string =>
 	formatSync(`${declarationPrefix}${typeString}`, {
 		semi: false,
 		printWidth: 60,
 		trailingComma: "none",
-		parser: "typescript",
+		filepath: filename,
+		// parser: "typescript",
 		...getConfig().typeToStringFormat
 	})
 		.slice(declarationPrefix.length)
