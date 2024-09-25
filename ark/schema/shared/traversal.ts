@@ -50,22 +50,30 @@ export class TraversalContext {
 	}
 
 	finalize(): unknown {
-		if (this.hasError()) return this.errors
+		const f = () => this.hasError() ? this.errors : this.root
 
-		if (!this.queuedMorphs.length) return this.root
+		// console.log(Object.fromEntries((Object.entries(this.errors.byPath).map(([k, v])=>[k, v+''])))) 
+
+		if (!this.queuedMorphs.length) return f()
+
+		let shouldClone = false 
 
 		if (
 			typeof this.root === "object" &&
 			this.root !== null &&
 			this.config.clone
-		)
+		) {
+			shouldClone = true
 			this.root = this.config.clone(this.root)
-
+		}
+		// console.log({queuedMorphs: this.queuedMorphs})
 		// invoking morphs that are Nodes will reuse this context, potentially
 		// adding additional morphs, so we have to continue looping until
 		// queuedMorphs is empty rather than iterating over the list once
 		while (this.queuedMorphs.length) {
 			const { path, morphs } = this.queuedMorphs.shift()!
+			// console.log(path.join('.') || '.', ...morphs.map(e=>e+''))
+			if (this.errors.byPath[path.join('.')]) continue
 
 			const key = path.at(-1)
 
@@ -84,22 +92,24 @@ export class TraversalContext {
 					parent === undefined ? this.root : parent[key!],
 					this
 				)
-				if (result instanceof ArkErrors) return result
-				if (this.hasError()) return this.errors
-				if (result instanceof ArkError) {
+				if (result instanceof ArkErrors) 
+					this.errors.merge(result)
+				else if (result instanceof ArkError) {
 					// if an ArkError was returned but wasn't added to these
 					// errors, add it then return
-					this.error(result)
-					return this.errors
+					if (!this.errors.includes(result))
+					this.errors.add(result)
+					// return this.errors
+				} else {
+					// apply the morph function and assign the result to the
+					// corresponding property, or to root if path is empty
+					if (parent === undefined) this.root = result
+					else if (!this.hasError() || shouldClone) parent[key!] = result
 				}
 
-				// apply the morph function and assign the result to the
-				// corresponding property, or to root if path is empty
-				if (parent === undefined) this.root = result
-				else parent[key!] = result
 			}
 		}
-		return this.root
+		return f()
 	}
 
 	get currentErrorCount(): number {
